@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-[#071428] flex justify-center pt-10">
+
+    <div class="w-[600px] bg-[#0b1e34] border border-gray-700 rounded-lg p-6">
+  
+      <!-- HEADER -->
+      <h2 class="text-xl text-white mb-6">
+        {{ isEditMode ? 'Edit Employee' : 'Create New Employee' }}
+      </h2>
+  
+      <!-- FORM -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="space-y-4">
+  
+        @for (field of fields; track field.key) {
+  
+          <div class="flex flex-col">
+  
+            <!-- LABEL -->
+            <label class="text-sm text-gray-300 mb-1">
+              {{field.title}}
+              @if (field.required) {
+                <span class="text-red-500">*</span>
+              }
+            </label>
+  
+            <!-- TEXT / EMAIL / URL -->
+            @if (field.type === 'text' || field.type === 'email' || field.type === 'url') {
+              <input
+                [type]="field.type"
+                [formControlName]="field.key"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500"
+              />
+            }
+  
+            <!-- PHONE -->
+            @if (field.type === 'phone') {
+              <input
+                type="tel"
+                [formControlName]="field.key"
+                placeholder="Enter 10-digit phone"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500"
+              />
+            }
+  
+            <!-- INTEGER -->
+            @if (field.type === 'integer') {
+              <input
+                type="number"
+                [formControlName]="field.key"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500"
+              />
+            }
+  
+            <!-- DECIMAL -->
+            @if (field.type === 'decimal') {
+              <input
+                type="number"
+                step="0.01"
+                [formControlName]="field.key"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500"
+              />
+            }
+  
+            <!-- DATE -->
+            @if (field.type === 'datetime') {
+              <input
+                type="date"
+                [formControlName]="field.key"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500"
+              />
+            }
+  
+            <!-- TEXTAREA -->
+            @if (field.type === 'textarea') {
+              <textarea
+                rows="3"
+                [formControlName]="field.key"
+                class="bg-[#10243c] border border-gray-700 p-2 rounded text-white outline-none focus:border-blue-500">
+              </textarea>
+            }
+  
+            <!-- VALIDATION ERRORS -->
+            @if (form.get(field.key)?.touched && form.get(field.key)?.invalid) {
+  
+              <div class="text-red-400 text-sm space-y-1 mt-1">
+  
+                @if (form.get(field.key)?.errors?.['required']) {
+                  <div>This field is required</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['min']) {
+                  <div>Minimum value is {{field.min}}</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['max']) {
+                  <div>Maximum value is {{field.max}}</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['minlength']) {
+                  <div>Minimum length is {{field.minLength}}</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['maxlength']) {
+                  <div>Maximum length is {{field.maxLength}}</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['email']) {
+                  <div>Invalid email format</div>
+                }
+  
+                @if (form.get(field.key)?.errors?.['pattern']) {
+  
+                  @if (field.type === 'phone') {
+                    <div>Enter valid 10-digit phone number</div>
+                  } @else if (field.type === 'url') {
+                    <div>Enter valid URL (must start with http/https)</div>
+                  } @else {
+                    <div>Invalid format</div>
+                  }
+  
+                }
+  
+              </div>
+  
+            }
+  
+          </div>
+  
+        }
+  
+        <!-- ACTION BUTTONS -->
+        <div class="flex gap-4 pt-6">
+  
+          <!-- SAVE -->
+          <button
+            type="submit"
+            [disabled]="form.invalid || isSubmitting"
+            class="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50">
+  
+            @if (!isSubmitting) {
+                <span>{{ isEditMode ? 'Update' : 'Save' }}</span>
+              } @else {
+                <span>Saving...</span>
+              }
+  
+          </button>
+  
+          <!-- CANCEL -->
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white">
+  
+            Cancel
+  
+          </button>
+  
+        </div>
+  
+        <!-- EMPTY STATE -->
+        @if (!fields.length) {
+          <div class="text-center text-gray-400 mt-6">
+            No fields configured. Please create fields first.
+          </div>
+        }
+  
+      </form>
+  
+    </div>
+  
+  </div>

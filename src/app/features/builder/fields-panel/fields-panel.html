@@ -1,0 +1,38 @@
+<div class="bg-[#0f172a] border border-gray-800 rounded-xl p-4 h-full">
+
+    <div class="flex justify-between items-center mb-4">
+    
+    <h2 class="text-lg font-semibold">Fields</h2>
+    
+    <button  (click)="addNew()" class="bg-blue-600 w-8 h-8 rounded flex items-center justify-center">
+    +
+    </button>
+    
+    </div>
+    
+    <input
+    placeholder="Filter Fields"
+    class="w-full p-2 mb-4 bg-[#1e293b] rounded border border-gray-700"
+    />
+    
+    <div class="space-y-2 overflow-auto max-h-[600px]">
+    
+    <div
+    *ngFor="let field of fields$ | async" (click)="select(field)"
+    class="bg-[#1e293b] hover:bg-blue-600 transition p-3 rounded flex justify-between items-center cursor-pointer">
+    
+    <span>{{field.title || '(Untitled)'}}</span>
+    
+    <span class="text-xs text-gray-400">
+    {{field.type}}
+    </span>
+    
+    </div>
+    
+    </div>
+    
+    <div (click)="addNew()" class="mt-4 text-blue-400 cursor-pointer">
+    + Add Field
+    </div>
+    
+    </div>

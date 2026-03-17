@@ -1,0 +1,183 @@
+<div class="bg-[#071428] text-white rounded-xl p-6">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="text-sm text-gray-300">
+        {{filteredData.length}} Items
+      </div>
+  
+      <div class="flex gap-2">
+        <!-- NEW: delete button (no style change) -->
+        <button
+          (click)="onDeleteSelected()"
+          class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded text-sm">
+          Delete
+        </button>
+  
+        <button routerLink="/create" class="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm">
+          + Add
+        </button>
+      </div>
+    </div>
+  
+    <!-- TABLE -->
+    <div class="overflow-x-auto rounded-lg border border-gray-800">
+  
+      <table class="w-full table-fixed border-collapse">
+  
+        <!-- HEADER -->
+        <thead class="bg-[#0f172a] text-gray-300 text-sm">
+  
+          <tr>
+  
+            <!-- SELECT -->
+            <th class="w-12 px-3 py-3 border-b border-gray-800 text-center">
+              <input type="checkbox" (change)="toggleAll($event)">
+            </th>
+  
+            <!-- COLUMNS -->
+            @for (col of columns; track col.key) {
+              <th class="px-4 py-3 border-b border-gray-800 text-left align-top">
+  
+                <div class="flex flex-col gap-2">
+  
+                  <!-- TITLE + SORT -->
+                  <div
+                    class="flex items-center gap-1 cursor-pointer select-none"
+                    (click)="sort(col.key)">
+  
+                    <span class="font-medium text-white truncate">
+                      {{col.title}}
+                    </span>
+  
+                    <span class="text-xs text-gray-400">
+                      @if (sortColumn === col.key) {
+                        {{sortDirection === 'asc' ? '▲' : '▼'}}
+                      }
+                    </span>
+  
+                  </div>
+  
+                  <!-- FILTER -->
+                  <input
+                    class="w-full px-2 py-1 text-xs bg-[#1e293b] border border-gray-700 rounded outline-none focus:border-blue-500"
+                    placeholder="Search"
+                    (input)="onFilter($any($event.target).value, col.key)"
+                  />
+  
+                </div>
+  
+              </th>
+            }
+  
+          </tr>
+  
+        </thead>
+  
+        <!-- BODY -->
+        <tbody class="text-sm">
+          @if (paginatedData.length > 0 && filteredData.length > 0) {
+  
+            @for (row of paginatedData; track row.id) {
+              <!-- NEW: row click -->
+              <tr
+                class="hover:bg-[#0f1f3a] transition cursor-pointer"
+                (click)="rowClick.emit(row)">
+  
+                <!-- SELECT -->
+                <td class="w-12 px-3 py-3 border-b border-gray-800 text-center">
+                  <input
+                    type="checkbox"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleRow(row)"
+                    [checked]="isSelected(row)">
+                </td>
+  
+                <!-- DATA -->
+                @for (col of columns; track col.key) {
+                  <td class="px-4 py-3 border-b border-gray-800 text-gray-200 truncate">
+                    {{row[col.key] || '-'}}
+                  </td>
+                }
+  
+              </tr>
+            }
+  
+          } @else {
+  
+            <!-- EMPTY STATE (UNCHANGED) -->
+            <tr>
+              <td
+                [attr.colspan]="columns.length + 1"
+                class="py-10 text-center border-b border-gray-800">
+  
+                <div class="flex flex-col items-center justify-center gap-2 text-gray-400">
+  
+                  <div class="text-3xl">📭</div>
+  
+                  <div class="text-sm font-medium">
+                    No data available
+                  </div>
+  
+                  <div class="text-xs text-gray-500">
+                    Try adjusting filters or add a new record
+                  </div>
+  
+                </div>
+  
+              </td>
+            </tr>
+  
+          }
+  
+        </tbody>
+  
+      </table>
+  
+    </div>
+  
+    <!-- PAGINATION (UNCHANGED) -->
+    <div class="flex justify-between items-center mt-4 text-sm text-gray-300">
+  
+      <div class="flex items-center gap-2">
+  
+        <button class="px-2 py-1 hover:bg-[#1e293b] rounded"
+                (click)="changePage(1)">«</button>
+  
+        <button class="px-2 py-1 hover:bg-[#1e293b] rounded"
+                (click)="changePage(page - 1)">‹</button>
+  
+        <span>
+          {{page}} of {{totalPages()}}
+        </span>
+  
+        <button class="px-2 py-1 hover:bg-[#1e293b] rounded"
+                (click)="changePage(page + 1)">›</button>
+  
+        <button class="px-2 py-1 hover:bg-[#1e293b] rounded"
+                (click)="changePage(totalPages())">»</button>
+  
+      </div>
+  
+      <div class="flex items-center gap-2">
+  
+        <span>Items Per Page</span>
+  
+        <select
+          [(ngModel)]="pageSize"
+          (change)="applyAll()"
+          class="bg-[#1e293b] border border-gray-700 px-2 py-1 rounded text-sm outline-none">
+  
+          @for (size of [5,10,20,30]; track size) {
+            <option [value]="size">
+              {{size}}
+            </option>
+          }
+  
+        </select>
+  
+      </div>
+  
+    </div>
+  
+  </div>
