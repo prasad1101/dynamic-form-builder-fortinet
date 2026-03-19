@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { BuilderComponent } from './features/builder/builder/builder';
-import { EmployeeFormComponent } from './features/records/employee-form/employee-form';
-import { RecordsGridComponent } from './features/records/records-grid/records-grid';
+import { BuilderComponent } from './features/builder/builder-component/builder-component';
+import { EmployeeFormComponent } from './features/records/employee-form-component/employee-form-component';
+import { RecordsGridComponent } from './features/records/records-grid-component/records-grid-component';
 
 export const routes: Routes = [
     {

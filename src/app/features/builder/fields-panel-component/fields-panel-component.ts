@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormStoreService } from '../../../core/services/form-store';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 import { FieldConfig } from '../../../core/models/field.model';
 import { SnackbarService } from '../../../core/services/snackbar-service';
@@ -9,7 +9,7 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
   selector: 'app-fields-panel',
   standalone: true,
   imports: [CommonModule, DragDropModule],
-  templateUrl: './fields-panel.html'
+  templateUrl: './fields-panel-component.html'
 })
 export class FieldsPanelComponent {
 

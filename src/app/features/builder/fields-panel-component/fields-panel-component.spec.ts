@@ -2,8 +2,8 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
-import { FieldsPanelComponent } from './fields-panel';
-import { FormStoreService } from '../../../core/services/form-store';
+import { FieldsPanelComponent } from './fields-panel-component';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { FieldConfig, FieldType } from '../../../core/models/field.model';
 

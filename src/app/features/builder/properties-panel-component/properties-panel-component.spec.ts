@@ -2,8 +2,8 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
-import { PropertiesPanelComponent } from './properties-panel';
-import { FormStoreService } from '../../../core/services/form-store';
+import { PropertiesPanelComponent } from './properties-panel-component';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { FieldConfig } from '../../../core/models/field.model';
 

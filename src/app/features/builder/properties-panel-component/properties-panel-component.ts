@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FormStoreService } from '../../../core/services/form-store';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { FieldConfig, FieldType } from '../../../core/models/field.model';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 
@@ -8,7 +8,7 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
   selector: 'app-properties-panel',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './properties-panel.html'
+  templateUrl: './properties-panel-component.html'
 })
 export class PropertiesPanelComponent {
 

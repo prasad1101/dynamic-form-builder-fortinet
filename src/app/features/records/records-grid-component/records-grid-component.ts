@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FormStoreService } from '../../../core/services/form-store';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { FieldConfig } from '../../../core/models/field.model';
 import { Router } from '@angular/router';
 import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table';
@@ -11,7 +11,7 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
   selector: 'app-records-grid',
   standalone: true,
   imports: [CommonModule, CustomTableComponent],
-  templateUrl: './records-grid.html'
+  templateUrl: './records-grid-component.html'
 })
 export class RecordsGridComponent {
 

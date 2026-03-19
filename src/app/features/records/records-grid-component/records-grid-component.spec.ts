@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { RecordsGridComponent } from './records-grid';
-import { FormStoreService } from '../../../core/services/form-store';
+import { RecordsGridComponent } from './records-grid-component';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';

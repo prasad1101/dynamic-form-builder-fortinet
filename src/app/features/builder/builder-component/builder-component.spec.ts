@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BuilderComponent } from './builder';
-import { FieldsPanelComponent } from '../fields-panel/fields-panel';
-import { PropertiesPanelComponent } from '../properties-panel/properties-panel';
+import { BuilderComponent } from './builder-component';
+import { FieldsPanelComponent } from '../fields-panel-component/fields-panel-component';
+import { PropertiesPanelComponent } from '../properties-panel-component/properties-panel-component';
 
 describe('BuilderComponent', () => {
   let component: BuilderComponent;

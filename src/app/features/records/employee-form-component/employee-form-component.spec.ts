@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { EmployeeFormComponent } from './employee-form';
-import { FormStoreService } from '../../../core/services/form-store';
+import { EmployeeFormComponent } from './employee-form-component';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';

@@ -1,12 +1,12 @@
 import { Component, HostListener } from '@angular/core';
-import { FieldsPanelComponent } from '../fields-panel/fields-panel';
-import { PropertiesPanelComponent } from '../properties-panel/properties-panel';
+import { FieldsPanelComponent } from '../fields-panel-component/fields-panel-component';
+import { PropertiesPanelComponent } from '../properties-panel-component/properties-panel-component';
 
 @Component({
   selector: 'app-builder',
   imports: [FieldsPanelComponent, PropertiesPanelComponent],
-  templateUrl: './builder.html',
-  styleUrl: './builder.scss',
+  templateUrl: './builder-component.html',
+  styleUrl: './builder-component.scss',
 })
 export class BuilderComponent {
   activeTab: 'fields' | 'properties' = 'fields';

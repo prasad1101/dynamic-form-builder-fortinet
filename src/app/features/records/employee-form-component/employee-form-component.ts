@@ -10,14 +10,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime } from 'rxjs';
 
-import { FormStoreService } from '../../../core/services/form-store';
+import { FormStoreService } from '../../../core/services/form-store-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 
 @Component({
   selector: 'app-employee-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './employee-form.html'
+  templateUrl: './employee-form-component.html'
 })
 export class EmployeeFormComponent {
 
@@ -99,7 +99,7 @@ export class EmployeeFormComponent {
       // Populate form in edit mode
       if (this.isEditMode && this.editRecord) {
         this.form.patchValue(this.editRecord);
-      } 
+      }
       // Otherwise try restoring saved draft
       else {
         const draft = this.store.getDraft();
