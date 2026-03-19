@@ -140,10 +140,10 @@
             class="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50">
   
             @if (!isSubmitting) {
-                <span>{{ isEditMode ? 'Update' : 'Save' }}</span>
-              } @else {
-                <span>Saving...</span>
-              }
+              <span>{{ isEditMode ? 'Update' : 'Save' }}</span>
+            } @else {
+              <span>Saving...</span>
+            }
   
           </button>
   
@@ -152,9 +152,7 @@
             type="button"
             (click)="onCancel()"
             class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white">
-  
             Cancel
-  
           </button>
   
         </div>

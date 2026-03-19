@@ -66,14 +66,12 @@ export class CustomTableComponent implements OnChanges {
     this.applyAll();
   }
 
-  applyAll() {
+  applyAll(inputData?: any[]) {
 
-    let data = [...this.data];
+    let data = inputData ? [...inputData] : [...this.data];
 
-    // remove empty rows
     data = data.filter(row => row && Object.keys(row).length > 0);
 
-    // filter
     data = data.filter(row =>
       Object.keys(this.columnFilters).every(key => {
         const val = this.columnFilters[key];
@@ -82,24 +80,18 @@ export class CustomTableComponent implements OnChanges {
       })
     );
 
-    // sort (handles numbers + strings safely)
     if (this.sortColumn) {
       data.sort((a, b) => {
-
         let v1 = a[this.sortColumn];
         let v2 = b[this.sortColumn];
 
         v1 = v1 ?? '';
         v2 = v2 ?? '';
 
-        // numeric sort
         if (!isNaN(v1) && !isNaN(v2)) {
-          return this.sortDirection === 'asc'
-            ? v1 - v2
-            : v2 - v1;
+          return this.sortDirection === 'asc' ? v1 - v2 : v2 - v1;
         }
 
-        // string sort
         return this.sortDirection === 'asc'
           ? v1.toString().localeCompare(v2.toString())
           : v2.toString().localeCompare(v1.toString());
@@ -108,13 +100,8 @@ export class CustomTableComponent implements OnChanges {
 
     this.filteredData = data;
 
-    // fix pagination edge case
     const total = this.totalPages();
-    if (this.page > total) {
-      this.page = total;
-    } else {
-      this.page = 1;
-    }
+    this.page = this.page > total ? total : 1;
   }
 
   // pagination
@@ -170,6 +157,41 @@ export class CustomTableComponent implements OnChanges {
     this.deleteSelected.emit(Array.from(this.selectedRows));
     this.selectedRows.clear();
     this.emitSelection();
+  }
+
+  onGlobalSearch(value: string) {
+    const search = value.toLowerCase().trim();
+
+    if (!search) {
+      this.applyAll();
+      return;
+    }
+
+    const filtered = this.data.filter(row =>
+      this.columns.some(col =>
+        row[col.key]?.toString().toLowerCase().includes(search)
+      )
+    );
+
+    this.page = 1;
+    this.applyAll(filtered);
+  }
+
+  toggleSelectAllMobile() {
+
+    const allSelected = this.paginatedData.every(row =>
+      this.selectedRows.has(row.id)
+    );
+
+    if (allSelected) {
+      this.paginatedData.forEach(row =>
+        this.selectedRows.delete(row.id)
+      );
+    } else {
+      this.paginatedData.forEach(row =>
+        this.selectedRows.add(row.id)
+      );
+    }
   }
 
 }

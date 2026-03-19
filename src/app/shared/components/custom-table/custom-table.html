@@ -1,47 +1,84 @@
 <div class="bg-[#071428] text-white rounded-xl p-6">
 
     <!-- HEADER -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+  
       <div class="text-sm text-gray-300">
         {{filteredData.length}} Items
       </div>
   
-      <div class="flex gap-2">
-        <!-- NEW: delete button (no style change) -->
+      <div class="flex flex-wrap gap-2">
+  
         <button
           (click)="onDeleteSelected()"
-          class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded text-sm">
+          class="hidden md:inline-flex bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded text-sm">
           Delete
         </button>
   
-        <button routerLink="/create" class="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm">
+        <button
+          routerLink="/create"
+          class="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm">
           + Add
         </button>
+  
       </div>
     </div>
   
-    <!-- TABLE -->
-    <div class="overflow-x-auto rounded-lg border border-gray-800">
+    <!-- MOBILE TOOLBAR -->
+    <div class="md:hidden mb-3 space-y-2">
   
-      <table class="w-full table-fixed border-collapse">
+      <!-- GLOBAL SEARCH -->
+      <input
+        type="text"
+        placeholder="Search records..."
+        class="w-full px-3 py-2 text-sm bg-[#1e293b] border border-gray-700 rounded outline-none focus:border-blue-500"
+        (input)="onGlobalSearch($any($event.target).value)"
+      />
   
-        <!-- HEADER -->
+      <!-- ACTION BAR -->
+      <div class="flex justify-between items-center text-sm">
+  
+        <div class="text-gray-400">
+          {{selectedRows.size}} selected
+        </div>
+  
+        <div class="flex gap-2">
+  
+          <button
+            class="px-3 py-1 bg-[#1e293b] rounded"
+            (click)="toggleSelectAllMobile()">
+            Select All
+          </button>
+  
+          <button
+            class="px-3 py-1 bg-red-600 rounded"
+            (click)="onDeleteSelected()">
+            Delete
+          </button>
+  
+        </div>
+  
+      </div>
+  
+    </div>
+  
+    <!-- DESKTOP / TABLE VIEW -->
+    <div class="hidden md:block w-full overflow-x-auto rounded-lg border border-gray-800">
+  
+      <table class="w-full min-w-[800px] md:min-w-full table-fixed border-collapse">
+  
         <thead class="bg-[#0f172a] text-gray-300 text-sm">
-  
           <tr>
   
-            <!-- SELECT -->
             <th class="w-12 px-3 py-3 border-b border-gray-800 text-center">
               <input type="checkbox" (change)="toggleAll($event)">
             </th>
   
-            <!-- COLUMNS -->
             @for (col of columns; track col.key) {
               <th class="px-4 py-3 border-b border-gray-800 text-left align-top">
   
                 <div class="flex flex-col gap-2">
   
-                  <!-- TITLE + SORT -->
                   <div
                     class="flex items-center gap-1 cursor-pointer select-none"
                     (click)="sort(col.key)">
@@ -58,7 +95,6 @@
   
                   </div>
   
-                  <!-- FILTER -->
                   <input
                     class="w-full px-2 py-1 text-xs bg-[#1e293b] border border-gray-700 rounded outline-none focus:border-blue-500"
                     placeholder="Search"
@@ -71,20 +107,18 @@
             }
   
           </tr>
-  
         </thead>
   
-        <!-- BODY -->
         <tbody class="text-sm">
+  
           @if (paginatedData.length > 0 && filteredData.length > 0) {
   
             @for (row of paginatedData; track row.id) {
-              <!-- NEW: row click -->
+  
               <tr
                 class="hover:bg-[#0f1f3a] transition cursor-pointer"
                 (click)="rowClick.emit(row)">
   
-                <!-- SELECT -->
                 <td class="w-12 px-3 py-3 border-b border-gray-800 text-center">
                   <input
                     type="checkbox"
@@ -93,19 +127,18 @@
                     [checked]="isSelected(row)">
                 </td>
   
-                <!-- DATA -->
                 @for (col of columns; track col.key) {
-                  <td class="px-4 py-3 border-b border-gray-800 text-gray-200 truncate">
+                  <td class="px-4 py-3 border-b border-gray-800 text-gray-200 truncate max-w-[150px] md:max-w-none">
                     {{row[col.key] || '-'}}
                   </td>
                 }
   
               </tr>
+  
             }
   
           } @else {
   
-            <!-- EMPTY STATE (UNCHANGED) -->
             <tr>
               <td
                 [attr.colspan]="columns.length + 1"
@@ -136,8 +169,76 @@
   
     </div>
   
-    <!-- PAGINATION (UNCHANGED) -->
-    <div class="flex justify-between items-center mt-4 text-sm text-gray-300">
+    <!-- MOBILE VIEW -->
+    <div class="md:hidden mt-4 space-y-4">
+  
+      @if (paginatedData.length > 0 && filteredData.length > 0) {
+  
+        @for (row of paginatedData; track row.id) {
+  
+          <div
+            class="bg-[#0f172a] border border-gray-800 rounded-xl p-4 space-y-3 active:scale-[0.99] transition"
+            (click)="rowClick.emit(row)">
+  
+            <div class="flex justify-between items-start">
+  
+              <div class="flex flex-col">
+  
+                <span class="text-white font-semibold text-base truncate max-w-[220px]">
+                  {{row[columns[0]?.key] || 'Untitled'}}
+                </span>
+  
+                <span class="text-xs text-gray-400">
+                  {{columns[0]?.title}}
+                </span>
+  
+              </div>
+  
+              <input
+                type="checkbox"
+                (click)="$event.stopPropagation()"
+                (change)="toggleRow(row)"
+                [checked]="isSelected(row)">
+            </div>
+  
+            <div class="border-t border-gray-800"></div>
+  
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+  
+              @for (col of columns.slice(1); track col.key) {
+  
+                <div class="flex flex-col">
+  
+                  <span class="text-xs text-gray-400">
+                    {{col.title}}
+                  </span>
+  
+                  <span class="text-white truncate">
+                    {{row[col.key] || '-'}}
+                  </span>
+  
+                </div>
+  
+              }
+  
+            </div>
+  
+          </div>
+  
+        }
+  
+      } @else {
+  
+        <div class="text-center text-gray-400 py-10">
+          No data available
+        </div>
+  
+      }
+  
+    </div>
+  
+    <!-- PAGINATION -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 mt-4 text-sm text-gray-300">
   
       <div class="flex items-center gap-2">
   

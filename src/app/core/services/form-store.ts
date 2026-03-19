@@ -16,6 +16,7 @@ interface BuilderState {
 
 const STORAGE_KEY = 'builder-state';
 const RECORDS_KEY = 'form-records';
+const DRAFT_KEY = 'employee-form-draft';
 
 @Injectable({ providedIn: 'root' })
 export class FormStoreService {
@@ -24,10 +25,6 @@ export class FormStoreService {
   // LOCAL STORAGE HELPERS
   // -------------------------------
 
-  /*
-    Generic method to safely read from localStorage.
-    If parsing fails or data is missing, fallback is returned.
-  */
   private getFromStorage<T>(key: string, fallback: T): T {
     try {
       const data = localStorage.getItem(key);
@@ -37,9 +34,6 @@ export class FormStoreService {
     }
   }
 
-  /*
-    Generic method to write data to localStorage.
-  */
   private setToStorage(key: string, value: any) {
     localStorage.setItem(key, JSON.stringify(value));
   }
@@ -48,9 +42,6 @@ export class FormStoreService {
   // INITIAL STATE
   // -------------------------------
 
-  /*
-    Load builder state once when service initializes.
-  */
   private initialState: BuilderState = this.getFromStorage<BuilderState>(
     STORAGE_KEY,
     {
@@ -96,17 +87,11 @@ export class FormStoreService {
   // INTERNAL HELPERS
   // -------------------------------
 
-  /*
-    Finds selected field from initial state.
-  */
   private getSelectedField(): FieldConfig | null {
     const { selectedFieldId, fields } = this.initialState;
     return fields.find(f => f.id === selectedFieldId) || null;
   }
 
-  /*
-    Save builder-related state to localStorage.
-  */
   private persistBuilderState() {
 
     const selectedId = this.selectedFieldSubject.value?.id || null;
@@ -120,9 +105,6 @@ export class FormStoreService {
     this.setToStorage(STORAGE_KEY, state);
   }
 
-  /*
-    Save records separately from builder state.
-  */
   private persistRecords() {
     this.setToStorage(RECORDS_KEY, this.records);
   }
@@ -131,21 +113,15 @@ export class FormStoreService {
   // FIELD MANAGEMENT
   // -------------------------------
 
-  /*
-    Select an existing field for editing.
-  */
   selectField(field: FieldConfig) {
-    this.selectedFieldSubject.next({ ...field }); // clone to avoid mutation
+    this.selectedFieldSubject.next({ ...field });
     this.isNewFieldSubject.next(false);
     this.persistBuilderState();
   }
 
-  /*
-    Initialize a new field.
-  */
   createNewField() {
     this.selectedFieldSubject.next({
-      id: null as any,
+      id: crypto.randomUUID(),
       title: '',
       key: '',
       type: 'text' as FieldType,
@@ -156,9 +132,6 @@ export class FormStoreService {
     this.persistBuilderState();
   }
 
-  /*
-    Create or update a field.
-  */
   saveField(field: FieldConfig) {
 
     if (!field.title?.trim()) {
@@ -195,9 +168,6 @@ export class FormStoreService {
     this.persistBuilderState();
   }
 
-  /*
-    Delete a field.
-  */
   deleteField(id: string) {
     const updated = this.fields.filter(f => f.id !== id);
 
@@ -208,9 +178,6 @@ export class FormStoreService {
     this.persistBuilderState();
   }
 
-  /*
-    Revert unsaved changes.
-  */
   revert() {
     const selectedId = this.selectedFieldSubject.value?.id;
     if (!selectedId) return;
@@ -225,25 +192,16 @@ export class FormStoreService {
   // RECORD MANAGEMENT
   // -------------------------------
 
-  /*
-    Add new record.
-  */
   addRecord(record: any) {
     const updated = [...this.records, record];
     this.recordsSubject.next(updated);
     this.persistRecords();
   }
 
-  /*
-    Get record by id (important for edit flow).
-  */
   getRecordById(id: string) {
     return this.records.find(r => r.id === id) || null;
   }
 
-  /*
-    Update record safely.
-  */
   updateRecord(updatedRecord: any) {
 
     const index = this.records.findIndex(r => r.id === updatedRecord.id);
@@ -260,29 +218,52 @@ export class FormStoreService {
     this.persistRecords();
   }
 
-  /*
-    Delete record.
-  */
   deleteRecord(id: string) {
     const updated = this.records.filter(r => r.id !== id);
     this.recordsSubject.next(updated);
     this.persistRecords();
   }
 
-  /*
-    Replace all records (useful for API integration later).
-  */
   setRecords(records: any[]) {
     this.recordsSubject.next(records);
     this.persistRecords();
   }
 
-  /*
-    Clear all records (useful for testing/reset).
-  */
   clearRecords() {
     this.recordsSubject.next([]);
     this.persistRecords();
+  }
+
+  // -------------------------------
+  // FIELD REORDER (FIXED)
+  // -------------------------------
+
+  updateFields(fields: FieldConfig[]) {
+    this.fieldsSubject.next([...fields]); // keep original behavior
+
+    const state: BuilderState = {
+      fields: fields,
+      selectedFieldId: this.selectedFieldSubject.value?.id || null,
+      isNewField: this.isNewFieldSubject.value
+    };
+
+    this.setToStorage(STORAGE_KEY, state);
+  }
+
+  // -------------------------------
+  // DRAFT MANAGEMENT
+  // -------------------------------
+
+  saveDraft(draft: any) {
+    this.setToStorage(DRAFT_KEY, draft);
+  }
+
+  getDraft(): any {
+    return this.getFromStorage<any>(DRAFT_KEY, null);
+  }
+
+  clearDraft() {
+    localStorage.removeItem(DRAFT_KEY);
   }
 
 }

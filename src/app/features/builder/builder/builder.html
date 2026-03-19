@@ -1,12 +1,33 @@
-<div class="h-screen bg-[#0b1220] text-gray-200 flex gap-6 p-6">
+<div class="min-h-screen bg-[#0b1220] text-gray-200 flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
-    <!-- Fields Panel -->
-    <div class="w-[350px]">
+    <!-- MOBILE TAB SWITCH -->
+    <div class="md:hidden flex bg-[#0f172a] rounded-lg p-1 mb-2">
+      <button
+        class="flex-1 py-2 text-sm rounded"
+        [class.bg-blue-600]="activeTab === 'fields'"
+        (click)="activeTab = 'fields'">
+        Fields
+      </button>
+  
+      <button
+        class="flex-1 py-2 text-sm rounded"
+        [class.bg-blue-600]="activeTab === 'properties'"
+        (click)="activeTab = 'properties'">
+        Properties
+      </button>
+    </div>
+  
+    <!-- FIELDS PANEL -->
+    <div
+      class="w-full md:w-[350px]"
+      [class.hidden]="isMobile && activeTab !== 'fields'">
       <app-fields-panel></app-fields-panel>
     </div>
   
-    <!-- Properties Panel -->
-    <div class="flex-1">
+    <!-- PROPERTIES PANEL -->
+    <div
+      class="flex-1"
+      [class.hidden]="isMobile && activeTab !== 'properties'">
       <app-properties-panel></app-properties-panel>
     </div>
   

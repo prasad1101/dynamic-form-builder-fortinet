@@ -8,8 +8,10 @@ import {
   FormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime } from 'rxjs';
 
 import { FormStoreService } from '../../../core/services/form-store';
+import { SnackbarService } from '../../../core/services/snackbar-service';
 
 @Component({
   selector: 'app-employee-form',
@@ -23,40 +25,35 @@ export class EmployeeFormComponent {
   private store = inject(FormStoreService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private snackbar = inject(SnackbarService);
 
   form: FormGroup = this.fb.group({});
   fields: any[] = [];
 
   isSubmitting = false;
 
-  // edit mode
+  // Used to determine whether we are editing an existing record
   isEditMode = false;
   editRecord: any = null;
 
   ngOnInit() {
 
-    // -------------------------------
-    // ONLY ROUTE PARAM BASED EDIT
-    // -------------------------------
+    // Check if route contains an id, which means edit mode
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
       this.isEditMode = true;
-
-      // fetch record from store
       this.editRecord = this.store.getRecordById(id);
 
-      // handle invalid id
+      // If record is not found, notify and redirect
       if (!this.editRecord) {
-        alert('Record not found');
+        this.snackbar.error('Record not found');
         this.router.navigate(['/records']);
         return;
       }
     }
 
-    // -------------------------------
-    // BUILD FORM
-    // -------------------------------
+    // Subscribe to field configuration and build form dynamically
     this.store.fields$.subscribe(fields => {
 
       this.fields = fields;
@@ -67,30 +64,14 @@ export class EmployeeFormComponent {
 
         const validators: ValidatorFn[] = [];
 
-        // required validation
-        if (field.required) {
-          validators.push(Validators.required);
-        }
+        // Basic validations based on field configuration
+        if (field.required) validators.push(Validators.required);
+        if (field.min !== undefined) validators.push(Validators.min(field.min));
+        if (field.max !== undefined) validators.push(Validators.max(field.max));
+        if (field.minLength) validators.push(Validators.minLength(field.minLength));
+        if (field.maxLength) validators.push(Validators.maxLength(field.maxLength));
 
-        // numeric validations
-        if (field.min !== undefined) {
-          validators.push(Validators.min(field.min));
-        }
-
-        if (field.max !== undefined) {
-          validators.push(Validators.max(field.max));
-        }
-
-        // text validations
-        if (field.minLength) {
-          validators.push(Validators.minLength(field.minLength));
-        }
-
-        if (field.maxLength) {
-          validators.push(Validators.maxLength(field.maxLength));
-        }
-
-        // type-based validations
+        // Type-specific validations
         const typeValidators: Record<string, ValidatorFn[]> = {
           email: [Validators.email],
           phone: [Validators.pattern(/^[6-9]\d{9}$/)],
@@ -101,26 +82,48 @@ export class EmployeeFormComponent {
           validators.push(...typeValidators[field.type]);
         }
 
-        // custom pattern
+        // Custom regex pattern if provided
         if (field.pattern) {
           validators.push(Validators.pattern(field.pattern));
         }
 
-        // assign control
         group[field.key] = [
           field.defaultValue ?? '',
           validators
         ];
       });
 
+      // Recreate form with latest field config
       this.form = this.fb.group(group);
 
-      // -------------------------------
-      // PATCH DATA IN EDIT MODE
-      // -------------------------------
+      // Populate form in edit mode
       if (this.isEditMode && this.editRecord) {
         this.form.patchValue(this.editRecord);
+      } 
+      // Otherwise try restoring saved draft
+      else {
+        const draft = this.store.getDraft();
+
+        if (draft) {
+          const shouldRestore = confirm('You have an unsaved draft. Restore it?');
+
+          if (shouldRestore) {
+            this.form.patchValue(draft);
+            this.snackbar.info('Draft restored');
+          } else {
+            this.store.clearDraft();
+          }
+        }
       }
+
+      // Auto-save draft while user types (only in create mode)
+      this.form.valueChanges
+        .pipe(debounceTime(500))
+        .subscribe(value => {
+          if (!this.isEditMode) {
+            this.store.saveDraft(value);
+          }
+        });
 
     });
 
@@ -128,33 +131,29 @@ export class EmployeeFormComponent {
 
   submit() {
 
+    // Prevent submission if form is invalid
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.snackbar.warning('Please fill all required fields');
       return;
     }
 
     this.isSubmitting = true;
 
-    // -------------------------------
-    // UPDATE
-    // -------------------------------
     if (this.isEditMode) {
 
+      // Merge updated values with existing record
       const updatedRecord = {
         ...this.editRecord,
         ...this.form.value
       };
 
       this.store.updateRecord(updatedRecord);
+      this.snackbar.success('Record updated successfully');
 
-      alert('Record updated successfully');
-    }
+    } else {
 
-    // -------------------------------
-    // CREATE
-    // -------------------------------
-    else {
-
+      // Create new record with generated id
       const record = {
         id: crypto.randomUUID(),
         ...this.form.value
@@ -162,19 +161,18 @@ export class EmployeeFormComponent {
 
       this.store.addRecord(record);
 
-      alert('Record saved successfully');
+      // Clear saved draft once record is persisted
+      this.store.clearDraft();
+
+      this.snackbar.success('Record saved successfully');
     }
 
     this.isSubmitting = false;
 
-    // go back to records page
+    // Navigate back to records list
     this.router.navigate(['/records']);
   }
 
-  /*
-    Cancel action should take user back to records page.
-    We do not reset form here because user is leaving the screen.
-  */
   onCancel() {
     this.router.navigate(['/records']);
   }

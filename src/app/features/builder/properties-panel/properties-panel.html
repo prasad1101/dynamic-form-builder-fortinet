@@ -1,95 +1,93 @@
-<div class="bg-[#0f172a] border border-gray-800 rounded-xl p-6 h-full">
+<div class="bg-[#0f172a] border border-gray-800 rounded-xl p-4 md:p-6 h-full md:h-[calc(100vh-120px)] overflow-auto">
 
-    <div class="flex justify-between mb-6">
-    
-    <h2 class="text-xl font-semibold">Properties</h2>
-    
-    <div class="flex gap-2">
-    
-    <button
-    (click)="removeField()"
-    class="bg-red-500 px-3 py-1 rounded">
-    Remove
-    </button>
-    
-    <button
-    (click)="revertField()"
-    class="bg-gray-600 px-3 py-1 rounded">
-    Revert
-    </button>
-    
-    <button
-    (click)="applyField()"
-    class="bg-blue-600 px-3 py-1 rounded">
-    Apply
-    </button>
-    
-    </div>
-    
-    </div>
-    
-    <!-- Field Type -->
-    
-    <div class="mb-6">
-    
-    <label class="block mb-2 text-sm">
-    Field Type
-    </label>
-    
-    <select
-    [(ngModel)]="fieldType"
-    class="w-full p-2 bg-[#1e293b] border border-gray-700 rounded">
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row justify-between gap-3 mb-6">
   
-    <option value="text">Text Field</option>
-    <option value="integer">Integer Field</option>
-    <option value="decimal">Decimal Field</option>
-    <option value="textarea">Text Area</option>
-    <option value="datetime">Date Time</option>
-    <option value="email">Email</option>
-    <option value="phone">Phone</option>
-    <option value="url">URL</option>
+      <h2 class="text-xl font-semibold">Properties</h2>
   
-  </select>
-    
+      <div class="flex flex-wrap gap-2">
+  
+        <button
+          (click)="removeField()"
+          class="bg-red-500 px-3 py-1 rounded">
+          Remove
+        </button>
+  
+        <button
+          (click)="revertField()"
+          class="bg-gray-600 px-3 py-1 rounded">
+          Revert
+        </button>
+  
+        <button
+          (click)="applyField()"
+          class="bg-blue-600 px-3 py-1 rounded">
+          Apply
+        </button>
+  
+      </div>
+  
     </div>
-    
-    <!-- Field Title -->
-    
+  
+    <!-- FIELD TYPE -->
     <div class="mb-6">
-    
-    <label class="block mb-2 text-sm">
-    Field Title
-    </label>
-    
-    <input
-    [(ngModel)]="fieldTitle"
-    class="w-full p-2 bg-[#1e293b] border border-gray-700 rounded"
-    />
-    
+  
+      <label class="block mb-2 text-sm">
+        Field Type
+      </label>
+  
+      <select
+        [(ngModel)]="fieldType"
+        class="w-full p-2 bg-[#1e293b] border border-gray-700 rounded">
+  
+        <option value="text">Text Field</option>
+        <option value="integer">Integer Field</option>
+        <option value="decimal">Decimal Field</option>
+        <option value="textarea">Text Area</option>
+        <option value="datetime">Date Time</option>
+        <option value="email">Email</option>
+        <option value="phone">Phone</option>
+        <option value="url">URL</option>
+  
+      </select>
+  
     </div>
-    
-    <!-- Required -->
-    
+  
+    <!-- FIELD TITLE -->
+    <div class="mb-6">
+  
+      <label class="block mb-2 text-sm">
+        Field Title
+      </label>
+  
+      <input
+        [(ngModel)]="fieldTitle"
+        class="w-full p-2 bg-[#1e293b] border border-gray-700 rounded"
+      />
+  
+    </div>
+  
+    <!-- REQUIRED -->
     <div>
-    
-    <label class="block mb-2 text-sm">
-    Required
-    </label>
-    
-    <div class="flex gap-4">
-    
-    <label class="flex items-center gap-2">
-    <input type="radio" [value]="false" [(ngModel)]="required" />
-    Not Required
-    </label>
-    
-    <label class="flex items-center gap-2">
-    <input type="radio" [value]="true" [(ngModel)]="required" />
-    Required
-    </label>
-    
+  
+      <label class="block mb-2 text-sm">
+        Required
+      </label>
+  
+      <div class="flex flex-col sm:flex-row gap-3">
+  
+        <label class="flex items-center gap-2">
+          <input type="radio" [value]="false" [(ngModel)]="required" />
+          Not Required
+        </label>
+  
+        <label class="flex items-center gap-2">
+          <input type="radio" [value]="true" [(ngModel)]="required" />
+          Required
+        </label>
+  
+      </div>
+  
     </div>
-    
-    </div>
-    
-    </div>
+  
+  </div>

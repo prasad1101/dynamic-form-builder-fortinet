@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { FormStoreService } from '../../../core/services/form-store';
 import { FieldConfig } from '../../../core/models/field.model';
-import { CustomTableComponent } from '../../../core/shared/components/custom-table/custom-table';
 import { Router } from '@angular/router';
+import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table';
+import { SnackbarService } from '../../../core/services/snackbar-service';
 
 @Component({
   selector: 'app-records-grid',
@@ -16,38 +17,58 @@ export class RecordsGridComponent {
 
   private store = inject(FormStoreService);
   private router = inject(Router);
+  private snackbar = inject(SnackbarService);
 
+  // Table configuration derived from dynamic field definitions
   columns: FieldConfig[] = [];
+
+  // Data source for the table
   data: any[] = [];
 
+  // Keeps track of selected row ids for bulk actions
   selectedIds: string[] = [];
 
   ngOnInit() {
 
-    // subscribe to dynamic fields
+    // Keep columns in sync with field configuration
     this.store.fields$.subscribe(fields => {
       this.columns = fields;
     });
 
-    // subscribe to records
+    // Keep table data in sync with stored records
     this.store.records$.subscribe(records => {
       this.data = records;
     });
 
   }
 
-  // receives selected row ids from table
+  // Called when table selection changes
   onSelectionChange(ids: string[]) {
     this.selectedIds = ids;
   }
 
-  // delete action comes from table
+  // Handles bulk delete triggered from table
   onDeleteSelected(ids: string[]) {
+
+    if (!ids.length) {
+      this.snackbar.warning('No records selected');
+      return;
+    }
+
     ids.forEach(id => this.store.deleteRecord(id));
+
+    this.snackbar.success('Selected records deleted');
   }
 
-  // row click for edit
+  // Navigate to edit screen when a row is clicked
   onRowClick(row: any) {
+
+    if (!row?.id) {
+      this.snackbar.error('Invalid record');
+      return;
+    }
+
     this.router.navigate(['/edit', row.id]);
   }
+
 }

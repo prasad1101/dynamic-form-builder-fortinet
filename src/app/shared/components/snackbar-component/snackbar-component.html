@@ -1,0 +1,26 @@
+<div class="fixed bottom-4 right-4 z-50 space-y-2 w-80">
+
+    @for (msg of (messages$ | async); track msg.id) {
+  
+      <div
+        class="flex items-center justify-between px-4 py-3 rounded shadow-lg text-sm text-white animate-slide-in"
+        [ngClass]="{
+          'bg-green-600': msg.type === 'success',
+          'bg-red-600': msg.type === 'error',
+          'bg-blue-600': msg.type === 'info',
+          'bg-yellow-500 text-black': msg.type === 'warning'
+        }">
+  
+        <span>{{ msg.text }}</span>
+  
+        <button
+          class="ml-3 text-lg leading-none"
+          (click)="remove(msg.id)">
+          ✕
+        </button>
+  
+      </div>
+  
+    }
+  
+  </div>

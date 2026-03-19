@@ -1,38 +1,67 @@
-<div class="bg-[#0f172a] border border-gray-800 rounded-xl p-4 h-full">
+<div class="bg-[#0f172a] border border-gray-800 rounded-xl p-4 h-full md:h-[calc(100vh-120px)] flex flex-col">
 
+    <!-- HEADER -->
     <div class="flex justify-between items-center mb-4">
-    
-    <h2 class="text-lg font-semibold">Fields</h2>
-    
-    <button  (click)="addNew()" class="bg-blue-600 w-8 h-8 rounded flex items-center justify-center">
-    +
-    </button>
-    
+      <h2 class="text-lg font-semibold">Fields</h2>
+  
+      <button
+        (click)="addNew()"
+        class="bg-blue-600 w-8 h-8 rounded flex items-center justify-center">
+        +
+      </button>
     </div>
-    
+  
+    <!-- FILTER -->
     <input
-    placeholder="Filter Fields"
-    class="w-full p-2 mb-4 bg-[#1e293b] rounded border border-gray-700"
+      placeholder="Filter Fields"
+      class="w-full p-2 text-sm mb-4 bg-[#1e293b] border border-gray-700 rounded"
     />
-    
-    <div class="space-y-2 overflow-auto max-h-[600px]">
-    
+  
+    <!-- LIST WITH DRAG -->
     <div
-    *ngFor="let field of fields$ | async" (click)="select(field)"
-    class="bg-[#1e293b] hover:bg-blue-600 transition p-3 rounded flex justify-between items-center cursor-pointer">
-    
-    <span>{{field.title || '(Untitled)'}}</span>
-    
-    <span class="text-xs text-gray-400">
-    {{field.type}}
-    </span>
-    
+      cdkDropList
+      [cdkDropListData]="fields"
+      (cdkDropListDropped)="drop($event)"
+      class="space-y-2 overflow-auto flex-1">
+  
+      @for (field of fields; track field.id) {
+  
+        <div
+          cdkDrag
+          [cdkDragData]="field"
+          class="bg-[#1e293b] hover:bg-blue-600 transition-all duration-200 ease-in-out p-3 rounded flex items-center">
+  
+          <!-- drag handle -->
+          <span cdkDragHandle class="cursor-move mr-2 select-none">
+            ☰
+          </span>
+  
+          <!-- content -->
+          <div
+            class="flex-1 flex justify-between items-center cursor-pointer"
+            (click)="select(field)">
+  
+            <span>
+              {{ field.title || '(Untitled)' }}
+            </span>
+  
+            <span class="text-xs text-gray-400">
+              {{ field.type }}
+            </span>
+  
+          </div>
+  
+        </div>
+  
+      }
+  
     </div>
-    
+  
+    <!-- FOOTER -->
+    <div
+      (click)="addNew()"
+      class="mt-4 text-blue-400 cursor-pointer">
+      + Add Field
     </div>
-    
-    <div (click)="addNew()" class="mt-4 text-blue-400 cursor-pointer">
-    + Add Field
-    </div>
-    
-    </div>
+  
+  </div>
