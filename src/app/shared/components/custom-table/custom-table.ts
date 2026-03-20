@@ -3,20 +3,22 @@ import {
   Input,
   OnChanges,
   Output,
-  EventEmitter
+  EventEmitter,
+  inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './custom-table.html'
 })
 export class CustomTableComponent implements OnChanges {
+  private router = inject(Router);
 
   @Input() columns: any[] = [];
   @Input() data: any[] = [];
@@ -192,6 +194,10 @@ export class CustomTableComponent implements OnChanges {
         this.selectedRows.add(row.id)
       );
     }
+  }
+
+  createClicked() {
+    this.router.navigate(['records/create']);
   }
 
 }

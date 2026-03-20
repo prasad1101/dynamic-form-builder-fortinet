@@ -68,7 +68,7 @@ export class RecordsGridComponent {
       return;
     }
 
-    this.router.navigate(['/edit', row.id]);
+    this.router.navigate(['records/edit', row.id]);
   }
 
 }
