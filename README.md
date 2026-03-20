@@ -126,9 +126,9 @@ The application is built using **Angular** and follows a modular, component-ba
     
     *   Displays submitted records in a data grid.
         
-    *   Integrates the [CustomTableComponent](vscode-file://vscode-app/private/var/folders/1l/k9bnrty515b2tly32dv93m4h0000gn/T/AppTranslocation/C3FDE45C-FA0B-4F3E-B3A3-118ECC2C6373/d/Visual Studio Code 2.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) for grid functionality.
+    *   Integrates the CustomTableComponent for grid functionality.
         
-*   [CustomTableComponent](vscode-file://vscode-app/private/var/folders/1l/k9bnrty515b2tly32dv93m4h0000gn/T/AppTranslocation/C3FDE45C-FA0B-4F3E-B3A3-118ECC2C6373/d/Visual Studio Code 2.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.html):
+*   CustomTableComponent:
     
     *   A reusable table component with features like sorting, filtering, pagination, and row selection.
         
@@ -203,7 +203,7 @@ src/
 
 The application emphasizes reusability:
 
-*   [CustomTableComponent](vscode-file://vscode-app/private/var/folders/1l/k9bnrty515b2tly32dv93m4h0000gn/T/AppTranslocation/C3FDE45C-FA0B-4F3E-B3A3-118ECC2C6373/d/Visual Studio Code 2.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.html):
+*   CustomTableComponent:
     
     *   A generic table component that can be used across different modules.
         
